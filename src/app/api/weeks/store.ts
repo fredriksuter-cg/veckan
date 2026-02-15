@@ -4,34 +4,42 @@ import path from "path";
 
 const DATA_FILE = path.join(process.cwd(), "src", "data", "weeks.json");
 
-function readStore(): Record<string, WeekPlan> {
-  try {
-    const raw = fs.readFileSync(DATA_FILE, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return {};
-  }
-}
+// In-memory store seeded from JSON file (works on Vercel where filesystem is read-only)
+let memoryStore: Record<string, WeekPlan> | null = null;
 
-function writeStore(data: Record<string, WeekPlan>) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+function getStore(): Record<string, WeekPlan> {
+  if (!memoryStore) {
+    try {
+      const raw = fs.readFileSync(DATA_FILE, "utf-8");
+      memoryStore = JSON.parse(raw);
+    } catch {
+      memoryStore = {};
+    }
+  }
+  return memoryStore!;
 }
 
 export function getWeek(weekId: string): WeekPlan | null {
-  const store = readStore();
+  const store = getStore();
   return store[weekId] || null;
 }
 
 export function saveWeek(plan: WeekPlan): WeekPlan {
-  const store = readStore();
+  const store = getStore();
   store[plan.weekId] = plan;
-  writeStore(store);
+
+  // Try to persist to file (works locally, fails silently on Vercel)
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2));
+  } catch {
+    // Read-only filesystem (Vercel) — in-memory only
+  }
+
   return plan;
 }
 
 export function getRecentRecipeIds(currentWeekId: string): string[] {
-  const store = readStore();
-  // Collect recipe IDs from all stored weeks except the current one
+  const store = getStore();
   const ids: string[] = [];
   for (const [weekId, plan] of Object.entries(store)) {
     if (weekId !== currentWeekId && plan.slots) {

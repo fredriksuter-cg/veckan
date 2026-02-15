@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { Recipe } from "@/lib/types";
 
@@ -17,19 +16,13 @@ export default function RecipePicker({
   onPick,
   onClose,
 }: RecipePickerProps) {
-  const [search, setSearch] = useState("");
-
-  const filtered = recipes.filter(
-    (r) =>
-      r.name.toLowerCase().includes(search.toLowerCase()) &&
-      !currentIds.includes(r.id)
-  );
+  const available = recipes.filter((r) => !currentIds.includes(r.id));
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white">
       {/* Header */}
       <div className="px-5 pt-14 pb-3 border-b border-warm-100">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-warm-800">Välj recept</h2>
           <button
             onClick={onClose}
@@ -38,20 +31,12 @@ export default function RecipePicker({
             Avbryt
           </button>
         </div>
-        <input
-          type="text"
-          placeholder="Sök recept..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-warm-50 text-warm-800 placeholder:text-warm-400 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-warm-300"
-          autoFocus
-        />
       </div>
 
       {/* 3-column grid */}
       <div className="flex-1 overflow-y-auto p-3">
         <div className="grid grid-cols-3 gap-2">
-          {filtered.map((recipe) => (
+          {available.map((recipe) => (
             <button
               key={recipe.id}
               onClick={() => onPick(recipe.id)}
