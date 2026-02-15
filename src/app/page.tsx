@@ -187,17 +187,17 @@ export default function WeekView() {
           </button>
         </div>
       ) : (
-        <div className="px-4">
+        <div className="px-0">
           {/* 2-column grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2">
             {plan.slots.map((recipeId, i) => {
               const recipe = getRecipe(recipeId);
               const isLastOdd = i === plan.slots.length - 1 && plan.slots.length % 2 === 1;
               return (
                 <div
                   key={i}
-                  className={`relative rounded-2xl overflow-hidden shadow-sm ${
-                    isLastOdd ? "col-span-2 h-48" : "aspect-square"
+                  className={`relative overflow-hidden border-[0.5px] border-warm-200/60 ${
+                    isLastOdd ? "col-span-2 h-44" : "aspect-square"
                   }`}
                 >
                   {recipe ? (
@@ -234,45 +234,36 @@ export default function WeekView() {
                   ) : (
                     <button
                       onClick={() => setPickerSlot(i)}
-                      className="w-full h-full border-2 border-dashed border-warm-300 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-warm-400 hover:bg-warm-100/50 transition-colors"
+                      className="w-full h-full bg-warm-50 flex flex-col items-center justify-center gap-1 active:bg-warm-100 transition-colors"
                     >
-                      <span className="text-2xl text-warm-400">+</span>
-                      <span className="text-sm text-warm-400">{dayLabels[i]}</span>
+                      <span className="text-2xl text-warm-300">+</span>
+                      <span className="text-xs text-warm-400">{dayLabels[i]}</span>
                     </button>
                   )}
 
-                  {/* Action overlay (long press) */}
+                  {/* Action overlay */}
                   {actionSlot === i && recipe && (
                     <div
-                      className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 p-3"
-                      onClick={(e) => e.stopPropagation()}
+                      className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col items-center justify-center gap-1.5 px-4"
+                      onClick={() => setActionSlot(null)}
                     >
                       <button
-                        onClick={() => handleReroll(i)}
-                        className="w-full bg-white text-warm-800 py-2.5 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+                        onClick={(e) => { e.stopPropagation(); handleReroll(i); }}
+                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform"
                       >
-                        🎲 Ge mig en annan
+                        Slumpa
                       </button>
                       <button
-                        onClick={() => {
-                          setActionSlot(null);
-                          setPickerSlot(i);
-                        }}
-                        className="w-full bg-white text-warm-800 py-2.5 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+                        onClick={(e) => { e.stopPropagation(); setActionSlot(null); setPickerSlot(i); }}
+                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform"
                       >
-                        🔄 Byt ut
+                        Byt ut
                       </button>
                       <button
-                        onClick={() => handleRemove(i)}
-                        className="w-full bg-white text-warm-800 py-2.5 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+                        onClick={(e) => { e.stopPropagation(); handleRemove(i); }}
+                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform"
                       >
-                        ✕ Ta bort
-                      </button>
-                      <button
-                        onClick={() => setActionSlot(null)}
-                        className="w-full text-white/80 py-2 text-sm mt-1"
-                      >
-                        Avbryt
+                        Ta bort
                       </button>
                     </div>
                   )}
@@ -283,33 +274,31 @@ export default function WeekView() {
 
           {/* Add slot card */}
           {editMode && plan.slots.length < 7 && (
-            <div className="mt-3">
-              <button
-                onClick={async () => {
-                  if (!plan) return;
-                  const newSlots = [...plan.slots, null];
-                  const res = await fetch(`/api/weeks/${weekId}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ...plan, slots: newSlots, numSlots: newSlots.length }),
-                  });
-                  const data = await res.json();
-                  setPlan(data);
-                }}
-                className="w-full py-3 border-2 border-dashed border-warm-300 rounded-2xl flex items-center justify-center gap-2 text-warm-400 hover:border-warm-400 hover:text-warm-500 hover:bg-warm-50 transition-colors"
-              >
-                <span className="text-lg">+</span>
-                <span className="text-sm font-medium">Lägg till en dag</span>
-              </button>
-            </div>
+            <button
+              onClick={async () => {
+                if (!plan) return;
+                const newSlots = [...plan.slots, null];
+                const res = await fetch(`/api/weeks/${weekId}`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ ...plan, slots: newSlots, numSlots: newSlots.length }),
+                });
+                const data = await res.json();
+                setPlan(data);
+              }}
+              className="w-full py-3 border-t border-warm-200/60 flex items-center justify-center gap-1.5 text-warm-400 active:bg-warm-50 transition-colors"
+            >
+              <span className="text-base">+</span>
+              <span className="text-xs font-medium">Lägg till en dag</span>
+            </button>
           )}
 
           {/* Regenerate link */}
-          <div className="mt-6 flex justify-center">
+          <div className="py-4 flex justify-center">
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="text-warm-500 text-sm font-medium flex items-center gap-1.5 hover:text-warm-700 active:text-warm-800 transition-colors disabled:opacity-50"
+              className="text-warm-400 text-xs font-medium flex items-center gap-1 active:text-warm-600 transition-colors disabled:opacity-50"
             >
               {generating ? "Skapar ny meny..." : "✨ Generera ny meny"}
             </button>
