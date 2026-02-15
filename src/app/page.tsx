@@ -167,26 +167,23 @@ export default function WeekView() {
 
       {/* Empty state or grid */}
       {!plan ? (
-        <div className="px-5 mt-12 flex flex-col items-center text-center">
-          <div className="text-6xl mb-6">🍳</div>
-          <h2 className="text-xl font-semibold text-warm-800 mb-2">
-            Ingen meny ännu
-          </h2>
-          <p className="text-warm-500 mb-8 max-w-[260px]">
-            Tryck för att få förslag på veckans middagar baserat på dina recept
-          </p>
+        <div className="flex-1 flex flex-col items-center justify-center text-center px-8" style={{ minHeight: "calc(100dvh - 180px)" }}>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="bg-warm-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:bg-warm-800 active:scale-[0.97] transition-all disabled:opacity-60"
+            className="group flex flex-col items-center gap-6 active:scale-[0.96] transition-transform disabled:opacity-70"
           >
-            {generating ? (
-              <span className="flex items-center gap-2">
-                <span className="animate-spin inline-block">✨</span> Skapar meny...
-              </span>
-            ) : (
-              "Skapa veckans meny ✨"
-            )}
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-warm-200 to-warm-300 flex items-center justify-center shadow-lg group-active:shadow-md transition-shadow">
+              <span className={`text-3xl ${generating ? "animate-spin" : ""}`}>✨</span>
+            </div>
+            <div>
+              <p className="text-xl font-semibold text-warm-800 mb-1.5">
+                {generating ? "Skapar meny..." : "Skapa veckans meny"}
+              </p>
+              <p className="text-sm text-warm-400 max-w-[220px]">
+                {generating ? "Väljer ut veckans middagar" : "Tryck här för att fylla veckan med middagar"}
+              </p>
+            </div>
           </button>
         </div>
       ) : (
