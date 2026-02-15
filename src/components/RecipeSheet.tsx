@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Recipe } from "@/lib/types";
 import { X } from "lucide-react";
@@ -11,41 +12,56 @@ interface RecipeSheetProps {
 }
 
 export default function RecipeSheet({ recipe, dayLabel, onClose }: RecipeSheetProps) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+  }, []);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(onClose, 300);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-black/40" onClick={onClose}>
+    <div
+      className={`fixed inset-0 z-[60] transition-colors duration-300 ${visible ? "bg-black/40" : "bg-black/0"}`}
+      onClick={handleClose}
+    >
       <div
-        className="mt-auto max-h-[85dvh] bg-warm-50 rounded-t-3xl overflow-hidden shadow-2xl flex flex-col"
+        className={`absolute inset-0 bg-warm-50 flex flex-col transition-transform duration-300 ease-out ${
+          visible ? "translate-y-0" : "translate-y-full"
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Handle bar + close */}
-        <div className="flex items-center justify-between px-4 pt-3 pb-1">
-          <div className="w-8" />
-          <div className="w-10 h-1 rounded-full bg-warm-300" />
+        {/* Close button */}
+        <div className="absolute top-3 right-4 z-10">
           <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-100 active:bg-warm-200 transition-colors"
+            onClick={handleClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm active:bg-black/50 transition-colors"
           >
-            <X size={16} color="#705E4A" strokeWidth={2.5} />
+            <X size={16} color="#fff" strokeWidth={2.5} />
           </button>
         </div>
 
         {/* Hero image */}
-        <div className="relative w-full h-56 shrink-0">
+        <div className="relative w-full h-72 shrink-0">
           <Image
             src={recipe.image}
             alt={recipe.name}
             fill
             className="object-cover"
             sizes="100vw"
+            priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-          <div className="absolute bottom-3 left-4 right-4">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+          <div className="absolute bottom-4 left-5 right-5">
             {dayLabel && (
               <p className="text-xs font-medium text-white/70 uppercase tracking-wider">
                 {dayLabel}
               </p>
             )}
-            <h2 className="text-xl font-bold text-white leading-tight mt-0.5">
+            <h2 className="text-2xl font-bold text-white leading-tight mt-0.5">
               {recipe.name}
             </h2>
           </div>
@@ -79,16 +95,6 @@ export default function RecipeSheet({ recipe, dayLabel, onClose }: RecipeSheetPr
               </li>
             ))}
           </ul>
-        </div>
-
-        {/* Close button */}
-        <div className="px-5 pb-8 pt-2">
-          <button
-            onClick={onClose}
-            className="w-full py-3 rounded-xl bg-warm-100 text-warm-700 text-sm font-medium active:bg-warm-200 transition-colors"
-          >
-            Stäng
-          </button>
         </div>
       </div>
     </div>
