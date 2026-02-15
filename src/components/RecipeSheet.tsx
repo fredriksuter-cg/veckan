@@ -11,14 +11,21 @@ interface RecipeSheetProps {
 
 export default function RecipeSheet({ recipe, dayLabel, onClose }: RecipeSheetProps) {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-black/40" onClick={onClose}>
       <div
         className="mt-auto max-h-[85dvh] bg-white rounded-t-3xl overflow-hidden shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Handle bar */}
-        <div className="flex justify-center pt-3 pb-1">
+        {/* Handle bar + close */}
+        <div className="flex items-center justify-between px-4 pt-3 pb-1">
+          <div className="w-8" />
           <div className="w-10 h-1 rounded-full bg-warm-300" />
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-100 active:bg-warm-200 transition-colors"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#704020" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+          </button>
         </div>
 
         {/* Hero image */}
@@ -32,9 +39,11 @@ export default function RecipeSheet({ recipe, dayLabel, onClose }: RecipeSheetPr
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
           <div className="absolute bottom-3 left-4 right-4">
-            <p className="text-xs font-medium text-white/70 uppercase tracking-wider">
-              {dayLabel}
-            </p>
+            {dayLabel && (
+              <p className="text-xs font-medium text-white/70 uppercase tracking-wider">
+                {dayLabel}
+              </p>
+            )}
             <h2 className="text-xl font-bold text-white leading-tight mt-0.5">
               {recipe.name}
             </h2>

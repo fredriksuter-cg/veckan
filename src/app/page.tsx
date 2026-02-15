@@ -209,7 +209,7 @@ export default function WeekView() {
                       onPointerUp={() => handlePointerUp(i)}
                       onPointerCancel={handlePointerCancel}
                       onContextMenu={(e) => e.preventDefault()}
-                      className="w-full h-full relative select-none touch-none"
+                      className="w-full h-full relative select-none"
                     >
                       <Image
                         src={recipe.image}

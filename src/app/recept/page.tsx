@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Recipe } from "@/lib/types";
 import TabBar from "@/components/TabBar";
+import RecipeSheet from "@/components/RecipeSheet";
 
 const ALL_TAGS = ["Alla", "pasta", "fisk", "kött", "vegetariskt", "snabbt", "barnvänligt", "klassiker", "soppa"];
 
@@ -11,6 +12,7 @@ export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [search, setSearch] = useState("");
   const [activeTag, setActiveTag] = useState("Alla");
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   useEffect(() => {
     fetch("/api/recipes")
@@ -58,8 +60,9 @@ export default function RecipesPage() {
       <div className="px-3 pt-2">
         <div className="grid grid-cols-3 gap-1.5">
           {filtered.map((recipe) => (
-            <div
+            <button
               key={recipe.id}
+              onClick={() => setSelectedRecipe(recipe)}
               className="relative aspect-square rounded-xl overflow-hidden"
             >
               <Image
@@ -70,16 +73,24 @@ export default function RecipesPage() {
                 sizes="33vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <p className="absolute bottom-1.5 left-2 right-2 text-[11px] font-medium text-white leading-tight">
+              <p className="absolute bottom-1.5 left-2 right-2 text-[11px] font-medium text-white leading-tight text-left">
                 {recipe.name}
               </p>
-            </div>
+            </button>
           ))}
         </div>
         <p className="text-center text-warm-400 text-xs mt-4">
           {filtered.length} recept
         </p>
       </div>
+
+      {selectedRecipe && (
+        <RecipeSheet
+          recipe={selectedRecipe}
+          dayLabel=""
+          onClose={() => setSelectedRecipe(null)}
+        />
+      )}
 
       <TabBar active="recept" />
     </div>
