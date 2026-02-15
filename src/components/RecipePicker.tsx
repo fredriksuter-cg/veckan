@@ -61,11 +61,11 @@ export default function RecipePicker({
                 src={recipe.image}
                 alt={recipe.name}
                 fill
-                className="object-cover"
+                className="object-cover pointer-events-none"
                 sizes="33vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <p className="absolute bottom-1.5 left-1.5 right-1.5 text-[11px] font-medium text-white leading-tight">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+              <p className="absolute bottom-1.5 left-1.5 right-1.5 text-[11px] font-medium text-white leading-tight pointer-events-none">
                 {recipe.name}
               </p>
             </button>

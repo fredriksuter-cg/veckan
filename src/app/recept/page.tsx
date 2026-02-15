@@ -69,11 +69,11 @@ export default function RecipesPage() {
                 src={recipe.image}
                 alt={recipe.name}
                 fill
-                className="object-cover"
+                className="object-cover pointer-events-none"
                 sizes="33vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <p className="absolute bottom-1.5 left-2 right-2 text-[11px] font-medium text-white leading-tight text-left">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+              <p className="absolute bottom-1.5 left-2 right-2 text-[11px] font-medium text-white leading-tight text-left pointer-events-none">
                 {recipe.name}
               </p>
             </button>
