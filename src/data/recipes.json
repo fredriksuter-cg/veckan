@@ -1,0 +1,156 @@
+[
+  {
+    "id": "salsicciapasta",
+    "name": "Salsicciapasta",
+    "tags": ["pasta", "snabbt"],
+    "ingredients": ["salsiccia", "pasta", "tomatkross", "vitlök", "parmesan", "basilika"],
+    "image": "/recipes/salsicciapasta.jpg"
+  },
+  {
+    "id": "schnitzel",
+    "name": "Schnitzel m potatis & surkål",
+    "tags": ["kött", "klassiker"],
+    "ingredients": ["schnitzel", "potatis", "surkål", "kaprislök", "smör"],
+    "image": "/recipes/schnitzel.jpg"
+  },
+  {
+    "id": "fiskpinnar",
+    "name": "Fiskpinnar m remoulad",
+    "tags": ["fisk", "barnvänligt", "snabbt"],
+    "ingredients": ["fiskpinnar", "potatis", "remoulad", "ärtor", "morötter"],
+    "image": "/recipes/fiskpinnar.jpg"
+  },
+  {
+    "id": "falukorv",
+    "name": "Falukorv m stuvade makaroner",
+    "tags": ["klassiker", "barnvänligt"],
+    "ingredients": ["falukorv", "makaroner", "mjölk", "smör", "vetemjöl"],
+    "image": "/recipes/falukorv.jpg"
+  },
+  {
+    "id": "arabiata",
+    "name": "Pasta arabiata m fetaost",
+    "tags": ["pasta", "vegetariskt", "snabbt"],
+    "ingredients": ["pasta", "tomatkross", "chili", "vitlök", "fetaost", "basilika"],
+    "image": "/recipes/arabiata.jpg"
+  },
+  {
+    "id": "fisk-remoulad",
+    "name": "Stekt fisk m remoulad & potatis",
+    "tags": ["fisk"],
+    "ingredients": ["fiskfilé", "potatis", "remoulad", "ärtor", "morötter", "gräddfil"],
+    "image": "/recipes/fisk-remoulad.jpg"
+  },
+  {
+    "id": "indisk-gryta",
+    "name": "Indisk gryta m ris",
+    "tags": ["gryta", "kyckling"],
+    "ingredients": ["kycklingfilé", "kokosmjölk", "curry", "morötter", "potatis", "ris", "kikärtor"],
+    "image": "/recipes/indisk-gryta.jpg"
+  },
+  {
+    "id": "matvete-sallad",
+    "name": "Stekt matvete i salladsblad",
+    "tags": ["vegetariskt", "hälsosamt"],
+    "ingredients": ["matvete", "tofu", "salladsblad", "torkade tranbär", "nötter"],
+    "image": "/recipes/matvete-sallad.jpg"
+  },
+  {
+    "id": "svamprisotto",
+    "name": "Svamprisotto",
+    "tags": ["vegetariskt", "klassiker"],
+    "ingredients": ["arborio-ris", "svamp", "vitvin", "parmesan", "lök", "smör"],
+    "image": "/recipes/svamprisotto.jpg"
+  },
+  {
+    "id": "fiskgryta",
+    "name": "Fiskgryta m saffran",
+    "tags": ["fisk", "gryta"],
+    "ingredients": ["torsk", "tomatkross", "potatis", "morötter", "saffran", "aioli", "dill"],
+    "image": "/recipes/fiskgryta.jpg"
+  },
+  {
+    "id": "broccoli-carbonara",
+    "name": "Broccoli carbonara",
+    "tags": ["pasta", "snabbt"],
+    "ingredients": ["pasta", "broccoli", "ägg", "parmesan", "vitlök", "pancetta"],
+    "image": "/recipes/broccoli-carbonara.jpg"
+  },
+  {
+    "id": "hamburgare",
+    "name": "Hamburgare",
+    "tags": ["kött", "barnvänligt"],
+    "ingredients": ["köttfärs", "hamburgerbröd", "sallad", "tomat", "lök", "dressing"],
+    "image": "/recipes/hamburgare.jpg"
+  },
+  {
+    "id": "linssoppa",
+    "name": "Linssoppa m tomat & kokosmjölk",
+    "tags": ["vegetariskt", "soppa"],
+    "ingredients": ["röda linser", "tomatkross", "kokosmjölk", "lök", "vitlök", "ingefära", "spiskummin"],
+    "image": "/recipes/linssoppa.jpg"
+  },
+  {
+    "id": "korv-stroganoff",
+    "name": "Korv Stroganoff",
+    "tags": ["klassiker", "barnvänligt", "snabbt"],
+    "ingredients": ["falukorv", "tomatpuré", "grädde", "lök", "ris"],
+    "image": "/recipes/korv-stroganoff.jpg"
+  },
+  {
+    "id": "halloumi-zucchini",
+    "name": "Halloumi m zucchini",
+    "tags": ["vegetariskt", "snabbt"],
+    "ingredients": ["halloumi", "zucchini", "paprika", "olivolja", "citron"],
+    "image": "/recipes/halloumi-zucchini.jpg"
+  },
+  {
+    "id": "gronsakssoppa",
+    "name": "Grönsakssoppa",
+    "tags": ["vegetariskt", "soppa", "hälsosamt"],
+    "ingredients": ["morötter", "potatis", "lök", "selleri", "purjolök", "grönsaksbuljong"],
+    "image": "/recipes/gronsakssoppa.jpg"
+  },
+  {
+    "id": "panerad-fisk",
+    "name": "Panerad fisk m ketchup & remoulad",
+    "tags": ["fisk", "barnvänligt"],
+    "ingredients": ["fiskfilé", "ströbröd", "ägg", "potatis", "ketchup", "remoulad"],
+    "image": "/recipes/panerad-fisk.jpg"
+  },
+  {
+    "id": "fisktacos",
+    "name": "Fisktacos m mango & coleslaw",
+    "tags": ["fisk", "snabbt"],
+    "ingredients": ["fiskfilé", "tortillas", "mango", "vitkål", "lime", "koriander", "jalapeño"],
+    "image": "/recipes/fisktacos.jpg"
+  },
+  {
+    "id": "kottbullar-pasta",
+    "name": "Pasta m pesto & köttbullar",
+    "tags": ["pasta", "barnvänligt"],
+    "ingredients": ["pasta", "köttbullar", "pesto", "tomat", "parmesan"],
+    "image": "/recipes/kottbullar-pasta.jpg"
+  },
+  {
+    "id": "fiskbullar",
+    "name": "Fiskbullar i vit sås",
+    "tags": ["fisk", "klassiker"],
+    "ingredients": ["fiskbullar", "potatis", "vit sås", "dill", "ärtor"],
+    "image": "/recipes/fiskbullar.jpg"
+  },
+  {
+    "id": "veggo-carbonara",
+    "name": "Veggo-carbonara m ärtor",
+    "tags": ["pasta", "vegetariskt"],
+    "ingredients": ["pasta", "ägg", "parmesan", "ärtor", "vitlök", "svartpeppar"],
+    "image": "/recipes/veggo-carbonara.jpg"
+  },
+  {
+    "id": "zucchini-parmesan",
+    "name": "Zucchini m olivolja, citron & parmesan",
+    "tags": ["vegetariskt", "snabbt", "hälsosamt"],
+    "ingredients": ["zucchini", "olivolja", "citron", "parmesan", "vitlök"],
+    "image": "/recipes/zucchini-parmesan.jpg"
+  }
+]

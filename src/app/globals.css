@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-warm-50: #FFF8F0;
+  --color-warm-100: #FFF0E0;
+  --color-warm-200: #FFE0C0;
+  --color-warm-300: #FFD0A0;
+  --color-warm-400: #E8A060;
+  --color-warm-500: #D08040;
+  --color-warm-600: #A06030;
+  --color-warm-700: #704020;
+  --color-warm-800: #402010;
+  --color-warm-900: #201008;
+  --color-sage-50: #F5F7F4;
+  --color-sage-100: #E8ECE6;
+  --color-sage-500: #7A8C72;
+  --color-sage-600: #5C6B55;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #FFF8F0;
+  --foreground: #2D1F14;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Prevent dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #FFF8F0;
+    --foreground: #2D1F14;
+  }
 }

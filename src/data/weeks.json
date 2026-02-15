@@ -1,0 +1,35 @@
+{
+  "2026-W08": {
+    "weekId": "2026-W08",
+    "numSlots": 5,
+    "slots": [
+      "arabiata",
+      "falukorv",
+      "fisk-remoulad",
+      "svamprisotto",
+      "gronsakssoppa"
+    ]
+  },
+  "2026-W07": {
+    "weekId": "2026-W07",
+    "numSlots": 5,
+    "slots": [
+      "salsicciapasta",
+      "fisktacos",
+      "fiskbullar",
+      "halloumi-zucchini",
+      null
+    ]
+  },
+  "2026-W09": {
+    "weekId": "2026-W09",
+    "numSlots": 5,
+    "slots": [
+      "schnitzel",
+      "korv-stroganoff",
+      "matvete-sallad",
+      "panerad-fisk",
+      "broccoli-carbonara"
+    ]
+  }
+}

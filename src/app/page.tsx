@@ -1,65 +1,345 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Recipe, WeekPlan } from "@/lib/types";
+import { getCurrentWeekId, getWeekNumber, offsetWeek, getWeekDayLabels } from "@/lib/weeks";
+import Image from "next/image";
+import TabBar from "@/components/TabBar";
+import RecipePicker from "@/components/RecipePicker";
+import RecipeSheet from "@/components/RecipeSheet";
+
+const NUM_SLOTS = 5;
+
+export default function WeekView() {
+  const [weekId, setWeekId] = useState(getCurrentWeekId());
+  const [plan, setPlan] = useState<WeekPlan | null>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [generating, setGenerating] = useState(false);
+  const [pickerSlot, setPickerSlot] = useState<number | null>(null);
+  const [actionSlot, setActionSlot] = useState<number | null>(null);
+  const [viewSlot, setViewSlot] = useState<number | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didLongPress = useRef(false);
+
+  const weekNumber = getWeekNumber(weekId);
+  const isCurrentWeek = weekId === getCurrentWeekId();
+  const dayLabels = getWeekDayLabels(plan?.slots.length || NUM_SLOTS);
+
+  useEffect(() => {
+    fetch("/api/recipes")
+      .then((r) => r.json())
+      .then(setRecipes);
+  }, []);
+
+  const fetchPlan = useCallback(() => {
+    fetch(`/api/weeks/${weekId}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.slots) setPlan(data);
+        else setPlan(null);
+      });
+  }, [weekId]);
+
+  useEffect(() => {
+    fetchPlan();
+  }, [fetchPlan]);
+
+  const getRecipe = (id: string | null): Recipe | undefined =>
+    id ? recipes.find((r) => r.id === id) : undefined;
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    const res = await fetch(`/api/weeks/${weekId}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ numSlots: NUM_SLOTS }),
+    });
+    const data = await res.json();
+    setPlan(data);
+    setGenerating(false);
+  };
+
+  const handleReroll = async (slotIndex: number) => {
+    if (!plan) return;
+    const res = await fetch(`/api/weeks/${weekId}/reroll`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slotIndex, currentIds: plan.slots }),
+    });
+    const data = await res.json();
+    setPlan(data);
+    setActionSlot(null);
+  };
+
+  const handlePickRecipe = async (recipeId: string) => {
+    if (pickerSlot === null || !plan) return;
+    const newSlots = [...plan.slots];
+    newSlots[pickerSlot] = recipeId;
+    const res = await fetch(`/api/weeks/${weekId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...plan, slots: newSlots }),
+    });
+    const data = await res.json();
+    setPlan(data);
+    setPickerSlot(null);
+  };
+
+  const handleRemove = async (slotIndex: number) => {
+    if (!plan) return;
+    const newSlots = [...plan.slots];
+    newSlots[slotIndex] = null;
+    const res = await fetch(`/api/weeks/${weekId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...plan, slots: newSlots }),
+    });
+    const data = await res.json();
+    setPlan(data);
+    setActionSlot(null);
+  };
+
+  // Long press handlers for edit mode
+  const handlePointerDown = (slotIndex: number) => {
+    didLongPress.current = false;
+    longPressTimer.current = setTimeout(() => {
+      didLongPress.current = true;
+      setActionSlot(slotIndex);
+    }, 500);
+  };
+
+  const handlePointerUp = (slotIndex: number) => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+    if (!didLongPress.current) {
+      if (editMode) {
+        setActionSlot(slotIndex);
+      } else {
+        setViewSlot(slotIndex);
+      }
+    }
+  };
+
+  const handlePointerCancel = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const viewRecipe = viewSlot !== null && plan ? getRecipe(plan.slots[viewSlot]) : undefined;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="pb-24 min-h-dvh">
+      {/* Header */}
+      <div className="px-5 pt-14 pb-4">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setWeekId(offsetWeek(weekId, -1))}
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-warm-100 active:bg-warm-200 transition-colors"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-warm-800">Vecka {weekNumber}</h1>
+            {plan && (
+              <button
+                onClick={() => { setEditMode(!editMode); setActionSlot(null); }}
+                className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                  editMode ? "bg-warm-700" : "bg-warm-200/60"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={editMode ? "#fff" : "#A06030"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+            )}
+          </div>
+          <button
+            onClick={() => setWeekId(offsetWeek(weekId, 1))}
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-warm-100 active:bg-warm-200 transition-colors"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L14 10L8 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Empty state or grid */}
+      {!plan ? (
+        <div className="px-5 mt-12 flex flex-col items-center text-center">
+          <div className="text-6xl mb-6">🍳</div>
+          <h2 className="text-xl font-semibold text-warm-800 mb-2">
+            Ingen meny ännu
+          </h2>
+          <p className="text-warm-500 mb-8 max-w-[260px]">
+            Tryck för att få förslag på veckans middagar baserat på dina recept
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={handleGenerate}
+            disabled={generating}
+            className="bg-warm-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:bg-warm-800 active:scale-[0.97] transition-all disabled:opacity-60"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {generating ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin inline-block">✨</span> Skapar meny...
+              </span>
+            ) : (
+              "Skapa veckans meny ✨"
+            )}
+          </button>
         </div>
-      </main>
+      ) : (
+        <div className="px-4">
+          {/* 2-column grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {plan.slots.map((recipeId, i) => {
+              const recipe = getRecipe(recipeId);
+              const isLastOdd = i === plan.slots.length - 1 && plan.slots.length % 2 === 1;
+              return (
+                <div
+                  key={i}
+                  className={`relative rounded-2xl overflow-hidden shadow-sm ${
+                    isLastOdd ? "col-span-2 h-48" : "aspect-square"
+                  }`}
+                >
+                  {recipe ? (
+                    <button
+                      onPointerDown={() => handlePointerDown(i)}
+                      onPointerUp={() => handlePointerUp(i)}
+                      onPointerCancel={handlePointerCancel}
+                      onContextMenu={(e) => e.preventDefault()}
+                      className="w-full h-full relative select-none touch-none"
+                    >
+                      <Image
+                        src={recipe.image}
+                        alt={recipe.name}
+                        fill
+                        className="object-cover"
+                        sizes={isLastOdd ? "100vw" : "50vw"}
+                        draggable={false}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      {editMode && (
+                        <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#704020" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </div>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 p-3">
+                        <p className="text-[10px] font-medium text-white/70 uppercase tracking-wider">
+                          {dayLabels[i]}
+                        </p>
+                        <p className="text-sm font-semibold text-white leading-tight mt-0.5">
+                          {recipe.name}
+                        </p>
+                      </div>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setPickerSlot(i)}
+                      className="w-full h-full border-2 border-dashed border-warm-300 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-warm-400 hover:bg-warm-100/50 transition-colors"
+                    >
+                      <span className="text-2xl text-warm-400">+</span>
+                      <span className="text-sm text-warm-400">{dayLabels[i]}</span>
+                    </button>
+                  )}
+
+                  {/* Action overlay (long press) */}
+                  {actionSlot === i && recipe && (
+                    <div
+                      className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2 p-3"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        onClick={() => handleReroll(i)}
+                        className="w-full bg-white text-warm-800 py-2.5 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+                      >
+                        🎲 Ge mig en annan
+                      </button>
+                      <button
+                        onClick={() => {
+                          setActionSlot(null);
+                          setPickerSlot(i);
+                        }}
+                        className="w-full bg-white text-warm-800 py-2.5 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+                      >
+                        🔄 Byt ut
+                      </button>
+                      <button
+                        onClick={() => handleRemove(i)}
+                        className="w-full bg-white text-warm-800 py-2.5 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+                      >
+                        ✕ Ta bort
+                      </button>
+                      <button
+                        onClick={() => setActionSlot(null)}
+                        className="w-full text-white/80 py-2 text-sm mt-1"
+                      >
+                        Avbryt
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Add slot card */}
+          {editMode && plan.slots.length < 7 && (
+            <div className="mt-3">
+              <button
+                onClick={async () => {
+                  if (!plan) return;
+                  const newSlots = [...plan.slots, null];
+                  const res = await fetch(`/api/weeks/${weekId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ...plan, slots: newSlots, numSlots: newSlots.length }),
+                  });
+                  const data = await res.json();
+                  setPlan(data);
+                }}
+                className="w-full py-3 border-2 border-dashed border-warm-300 rounded-2xl flex items-center justify-center gap-2 text-warm-400 hover:border-warm-400 hover:text-warm-500 hover:bg-warm-50 transition-colors"
+              >
+                <span className="text-lg">+</span>
+                <span className="text-sm font-medium">Lägg till en dag</span>
+              </button>
+            </div>
+          )}
+
+          {/* Regenerate link */}
+          <div className="mt-6 flex justify-center">
+            <button
+              onClick={handleGenerate}
+              disabled={generating}
+              className="text-warm-500 text-sm font-medium flex items-center gap-1.5 hover:text-warm-700 active:text-warm-800 transition-colors disabled:opacity-50"
+            >
+              {generating ? "Skapar ny meny..." : "✨ Generera ny meny"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Recipe detail sheet (tap) */}
+      {viewRecipe && viewSlot !== null && (
+        <RecipeSheet
+          recipe={viewRecipe}
+          dayLabel={dayLabels[viewSlot]}
+          onClose={() => setViewSlot(null)}
+        />
+      )}
+
+      {/* Recipe picker modal */}
+      {pickerSlot !== null && (
+        <RecipePicker
+          recipes={recipes}
+          currentIds={plan?.slots || []}
+          onPick={handlePickRecipe}
+          onClose={() => setPickerSlot(null)}
+        />
+      )}
+
+      <TabBar active="veckan" />
     </div>
   );
 }
