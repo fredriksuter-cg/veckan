@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Recipe } from "@/lib/types";
+import { X } from "lucide-react";
 
 interface RecipeSheetProps {
   recipe: Recipe;
@@ -13,7 +14,7 @@ export default function RecipeSheet({ recipe, dayLabel, onClose }: RecipeSheetPr
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-black/40" onClick={onClose}>
       <div
-        className="mt-auto max-h-[85dvh] bg-white rounded-t-3xl overflow-hidden shadow-2xl flex flex-col"
+        className="mt-auto max-h-[85dvh] bg-warm-50 rounded-t-3xl overflow-hidden shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Handle bar + close */}
@@ -24,7 +25,7 @@ export default function RecipeSheet({ recipe, dayLabel, onClose }: RecipeSheetPr
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-100 active:bg-warm-200 transition-colors"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#704020" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+            <X size={16} color="#705E4A" strokeWidth={2.5} />
           </button>
         </div>
 

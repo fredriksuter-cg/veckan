@@ -7,6 +7,7 @@ import Image from "next/image";
 import TabBar from "@/components/TabBar";
 import RecipePicker from "@/components/RecipePicker";
 import RecipeSheet from "@/components/RecipeSheet";
+import { ChevronLeft, ChevronRight, Pencil, Plus, Sparkles, Shuffle, ArrowLeftRight, Trash2 } from "lucide-react";
 
 const NUM_SLOTS = 5;
 
@@ -100,7 +101,6 @@ export default function WeekView() {
     setActionSlot(null);
   };
 
-  // Long press handlers for edit mode
   const handlePointerDown = (slotIndex: number) => {
     didLongPress.current = false;
     longPressTimer.current = setTimeout(() => {
@@ -135,50 +135,54 @@ export default function WeekView() {
   return (
     <div className="pb-24 min-h-dvh">
       {/* Header */}
-      <div className="px-5 pt-14 pb-4">
+      <div className="px-5 pt-3 pb-3">
         <div className="flex items-center justify-between">
           <button
             onClick={() => setWeekId(offsetWeek(weekId, -1))}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-warm-100 active:bg-warm-200 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full active:bg-warm-200 transition-colors"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <ChevronLeft size={22} />
           </button>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold text-warm-800">Vecka {weekNumber}</h1>
             {plan && (
               <button
                 onClick={() => { setEditMode(!editMode); setActionSlot(null); }}
-                className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
-                  editMode ? "bg-warm-700" : "bg-warm-200/60"
+                className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors ${
+                  editMode ? "bg-warm-700" : "bg-warm-200"
                 }`}
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={editMode ? "#fff" : "#A06030"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <Pencil size={13} color={editMode ? "#F5F0EB" : "#705E4A"} strokeWidth={2.5} />
               </button>
             )}
           </div>
           <button
             onClick={() => setWeekId(offsetWeek(weekId, 1))}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-warm-100 active:bg-warm-200 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-full active:bg-warm-200 transition-colors"
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4L14 10L8 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <ChevronRight size={22} />
           </button>
         </div>
       </div>
 
       {/* Empty state or grid */}
       {!plan ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center px-10" style={{ minHeight: "calc(100dvh - 180px)" }}>
+        <div className="flex-1 flex flex-col items-center justify-center text-center px-10" style={{ minHeight: "calc(100dvh - 140px)" }}>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="w-full bg-warm-700 text-white py-4 rounded-2xl text-lg font-semibold shadow-lg active:scale-[0.97] active:bg-warm-800 transition-all disabled:opacity-60"
+            className="w-full bg-warm-700 text-white py-4 rounded-2xl text-lg font-semibold shadow-lg active:scale-[0.97] active:bg-warm-800 transition-all disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {generating ? (
-              <span className="flex items-center justify-center gap-2">
-                <span className="animate-spin inline-block">✨</span> Skapar meny...
-              </span>
+              <>
+                <Sparkles size={20} className="animate-spin" />
+                Skapar meny...
+              </>
             ) : (
-              "Skapa veckans meny ✨"
+              <>
+                Skapa veckans meny
+                <Sparkles size={20} />
+              </>
             )}
           </button>
           <p className="text-sm text-warm-400 mt-3">
@@ -186,7 +190,7 @@ export default function WeekView() {
           </p>
         </div>
       ) : (
-        <div className="px-0">
+        <div>
           {/* 2-column grid */}
           <div className="grid grid-cols-2">
             {plan.slots.map((recipeId, i) => {
@@ -195,7 +199,7 @@ export default function WeekView() {
               return (
                 <div
                   key={i}
-                  className={`relative overflow-hidden border-[0.5px] border-warm-200/60 ${
+                  className={`relative overflow-hidden border-[0.5px] border-warm-300 ${
                     isLastOdd ? "col-span-2 h-44" : "aspect-square"
                   }`}
                 >
@@ -217,11 +221,11 @@ export default function WeekView() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                       {editMode && (
-                        <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 flex items-center justify-center">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#704020" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/90 flex items-center justify-center pointer-events-none">
+                          <Pencil size={12} color="#705E4A" strokeWidth={2.5} />
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 p-3">
+                      <div className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none">
                         <p className="text-[10px] font-medium text-white/70 uppercase tracking-wider">
                           {dayLabels[i]}
                         </p>
@@ -233,10 +237,10 @@ export default function WeekView() {
                   ) : (
                     <button
                       onClick={() => setPickerSlot(i)}
-                      className="w-full h-full bg-warm-50 flex flex-col items-center justify-center gap-1 active:bg-warm-100 transition-colors"
+                      className="w-full h-full bg-warm-100 flex flex-col items-center justify-center gap-1 active:bg-warm-200 transition-colors"
                     >
-                      <span className="text-2xl text-warm-300">+</span>
-                      <span className="text-xs text-warm-400">{dayLabels[i]}</span>
+                      <Plus size={24} className="text-warm-400" strokeWidth={1.5} />
+                      <span className="text-xs text-warm-500 font-medium">{dayLabels[i]}</span>
                     </button>
                   )}
 
@@ -248,21 +252,21 @@ export default function WeekView() {
                     >
                       <button
                         onClick={(e) => { e.stopPropagation(); handleReroll(i); }}
-                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform"
+                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform flex items-center justify-center gap-1.5"
                       >
-                        Slumpa
+                        <Shuffle size={14} /> Slumpa
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); setActionSlot(null); setPickerSlot(i); }}
-                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform"
+                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform flex items-center justify-center gap-1.5"
                       >
-                        Byt ut
+                        <ArrowLeftRight size={14} /> Byt ut
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleRemove(i); }}
-                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform"
+                        className="w-full bg-white text-warm-800 py-2 rounded-xl text-[13px] font-medium active:scale-[0.97] transition-transform flex items-center justify-center gap-1.5"
                       >
-                        Ta bort
+                        <Trash2 size={14} /> Ta bort
                       </button>
                     </div>
                   )}
@@ -285,9 +289,9 @@ export default function WeekView() {
                 const data = await res.json();
                 setPlan(data);
               }}
-              className="w-full py-3 border-t border-warm-200/60 flex items-center justify-center gap-1.5 text-warm-400 active:bg-warm-50 transition-colors"
+              className="w-full py-3 border-t border-warm-300 flex items-center justify-center gap-1.5 text-warm-500 active:bg-warm-100 transition-colors"
             >
-              <span className="text-base">+</span>
+              <Plus size={16} strokeWidth={2} />
               <span className="text-xs font-medium">Lägg till en dag</span>
             </button>
           )}
@@ -297,9 +301,10 @@ export default function WeekView() {
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="text-warm-400 text-xs font-medium flex items-center gap-1 active:text-warm-600 transition-colors disabled:opacity-50"
+              className="text-warm-500 text-xs font-medium flex items-center gap-1.5 active:text-warm-700 transition-colors disabled:opacity-50"
             >
-              {generating ? "Skapar ny meny..." : "✨ Generera ny meny"}
+              <Sparkles size={14} />
+              {generating ? "Skapar ny meny..." : "Generera ny meny"}
             </button>
           </div>
         </div>

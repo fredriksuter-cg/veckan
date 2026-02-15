@@ -26,7 +26,7 @@ export default function RecipesPage() {
   return (
     <div className="pb-24 min-h-dvh">
       {/* Header */}
-      <div className="px-5 pt-14 pb-2">
+      <div className="px-5 pt-3 pb-2">
         <h1 className="text-2xl font-bold text-warm-800 mb-3">Mina recept</h1>
         <div className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-hide">
           {ALL_TAGS.map((tag) => (

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Recipe } from "@/lib/types";
+import { X } from "lucide-react";
 
 interface RecipePickerProps {
   recipes: Recipe[];
@@ -19,16 +20,16 @@ export default function RecipePicker({
   const available = recipes.filter((r) => !currentIds.includes(r.id));
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white">
+    <div className="fixed inset-0 z-50 flex flex-col bg-warm-50">
       {/* Header */}
-      <div className="px-5 pt-14 pb-3 border-b border-warm-100">
+      <div className="px-5 pt-3 pb-3 border-b border-warm-300">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-warm-800">Välj recept</h2>
           <button
             onClick={onClose}
-            className="text-warm-500 text-sm font-medium"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-200 active:bg-warm-300 transition-colors"
           >
-            Avbryt
+            <X size={16} color="#705E4A" strokeWidth={2.5} />
           </button>
         </div>
       </div>
