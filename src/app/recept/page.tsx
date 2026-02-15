@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Recipe } from "@/lib/types";
 import TabBar from "@/components/TabBar";
@@ -10,7 +10,6 @@ const ALL_TAGS = ["Alla", "pasta", "fisk", "kött", "vegetariskt", "snabbt", "ba
 
 export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [search, setSearch] = useState("");
   const [activeTag, setActiveTag] = useState("Alla");
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
@@ -21,24 +20,14 @@ export default function RecipesPage() {
   }, []);
 
   const filtered = recipes.filter((r) => {
-    const matchesSearch = r.name.toLowerCase().includes(search.toLowerCase());
-    const matchesTag = activeTag === "Alla" || r.tags.includes(activeTag);
-    return matchesSearch && matchesTag;
+    return activeTag === "Alla" || r.tags.includes(activeTag);
   });
 
   return (
     <div className="pb-24 min-h-dvh">
       {/* Header */}
       <div className="px-5 pt-14 pb-2">
-        <h1 className="text-2xl font-bold text-warm-800 mb-4">Mina recept</h1>
-        <input
-          type="text"
-          placeholder="Sök recept..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-warm-100 text-warm-800 placeholder:text-warm-400 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-warm-300 mb-3"
-        />
-        {/* Tag filters */}
+        <h1 className="text-2xl font-bold text-warm-800 mb-3">Mina recept</h1>
         <div className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-hide">
           {ALL_TAGS.map((tag) => (
             <button
