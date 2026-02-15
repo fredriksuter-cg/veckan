@@ -167,24 +167,23 @@ export default function WeekView() {
 
       {/* Empty state or grid */}
       {!plan ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center px-8" style={{ minHeight: "calc(100dvh - 180px)" }}>
+        <div className="flex-1 flex flex-col items-center justify-center text-center px-10" style={{ minHeight: "calc(100dvh - 180px)" }}>
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="group flex flex-col items-center gap-6 active:scale-[0.96] transition-transform disabled:opacity-70"
+            className="w-full bg-warm-700 text-white py-4 rounded-2xl text-lg font-semibold shadow-lg active:scale-[0.97] active:bg-warm-800 transition-all disabled:opacity-60"
           >
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-warm-200 to-warm-300 flex items-center justify-center shadow-lg group-active:shadow-md transition-shadow">
-              <span className={`text-3xl ${generating ? "animate-spin" : ""}`}>✨</span>
-            </div>
-            <div>
-              <p className="text-xl font-semibold text-warm-800 mb-1.5">
-                {generating ? "Skapar meny..." : "Skapa veckans meny"}
-              </p>
-              <p className="text-sm text-warm-400 max-w-[220px]">
-                {generating ? "Väljer ut veckans middagar" : "Tryck här för att fylla veckan med middagar"}
-              </p>
-            </div>
+            {generating ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="animate-spin inline-block">✨</span> Skapar meny...
+              </span>
+            ) : (
+              "Skapa veckans meny ✨"
+            )}
           </button>
+          <p className="text-sm text-warm-400 mt-3">
+            {generating ? "Väljer ut veckans middagar" : "Förslag baserat på dina recept"}
+          </p>
         </div>
       ) : (
         <div className="px-0">
